@@ -1,0 +1,25 @@
+Vagrant.configure(2) do |config|
+
+  config.vm.box = "rhel72x64"
+  
+  # enable the ENV plugin
+#  config.env.enable 
+
+  config.vm.provision "shell", inline: <<-SHELL
+      sudo subscription-manager register --username PUT_USERNAME_HERE --password PUT_PASSWORD_HERE --autosubscribe
+      sudo subscription-manager repos --enable rhel-7-server-optional-rpms
+      sudo yum update
+      sudo yum install -y ntp
+      sudo systemctl enable ntpd
+      sudo systemctl start ntpd
+  SHELL
+
+  # Use :ansible or :ansible_local to
+  # select the provisioner of your choice
+#  config.vm.provision :ansible do |ansible|
+#    ansible.verbose        = "vvvv"
+#    ansible.ask_sudo_pass  = true
+#    ansible.playbook       = "provisioning/playbook.yml"
+#    ansible.extra_vars = { username: “PUT_USERNAME_HERE”, password: “PUT_PASSWORD_HERE” }
+#  end
+end
