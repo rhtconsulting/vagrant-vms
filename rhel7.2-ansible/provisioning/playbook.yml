@@ -1,50 +1,32 @@
 ---
 - hosts: all
-  remote_user: root
+  become: true
   tasks:
-#    - name:  Register as user (joe_user) with password (somepass) and auto-subscribe to available content.
-#      redhat_subscription: 
-#          state=present 
-#          username={{username}} 
-#          password={{password}}
-#          autosubscribe=true
-#      become_method: sudo
-    - name: upgrade all packages
-      yum:  
-          name=*
-          state=latest
-          enablerepo=rhel-7-server-optional-rpms
-      become: 
-          yes
-      become_method: 
-          sudo
-    - name: upgrade all packages
-      yum:  
-          name=*
-          state=latest
-          enablerepo=rhel-7-server-optional-rpms
-      become: 
-          yes
-      become_method: 
-          sudo
+    - name:  Register and auto-subscribe to available content
+      redhat_subscription:
+        state: present
+        username: "{{ lookup('env','RHN_USER') }}"
+        password: "{{ lookup('env','RHN_PASS') }}"
+        autosubscribe: true
+
+    - name: Upgrade all packages
+      command: yum update -y
+
     - name: Ensure NTP is Installed and the latest version
-      yum: 
-          pkg=ntp 
-          state=latest
-          enablerepo=rhel-7-server-optional-rpms
-      become: 
-          yes
-      become_method: 
-          sudo
+      yum:
+        pkg: ntp
+        state: latest
+
     - name: Ensure NTPD is running
-      service: 
-          name=ntpd 
-          state=started 
-          enabled=true
+      service:
+        name: ntpd
+        state: started
+        enabled: true
       notify:
-      - restart ntpd
+        - restart ntpd
+
   handlers:
     - name: restart ntpd
-      service: 
-          name:  ntpd 
-          state: restarted
+      service:
+        name: ntpd
+        state: restarted
