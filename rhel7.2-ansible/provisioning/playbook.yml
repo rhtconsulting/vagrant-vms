@@ -1,6 +1,8 @@
 ---
 - hosts: all
   become: true
+  vars:
+    update: false
   tasks:
     - name:  Register and auto-subscribe to available content
       redhat_subscription:
@@ -11,6 +13,7 @@
 
     - name: Upgrade all packages
       command: yum update -y
+      when: update
 
     - name: Ensure NTP is Installed and the latest version
       yum:
