@@ -1,0 +1,25 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure(2) do |config|
+  config.env.enable 
+  config.vm.box = "rhel72x64"
+
+  $my_script = <<SCRIPT
+    echo "Testing the new environment"
+    echo "echo Username: $1"
+    echo "echo Password: $2"
+    sudo subscription-manager register --username #{ENV['USERNAME']} --password #{ENV['PASSWORD']} --autosubscribe
+    sudo subscription-manager repos --enable rhel-7-server-optional-rpms
+    sudo yum update
+    sudo yum install -y ntp
+    sudo systemctl enable ntpd
+    sudo systemctl start ntpd
+SCRIPT
+
+  config.vm.provision "shell" do |s|
+    s.inline = $my_script
+    s.args   = "#{ENV['USERNAME']}, #{ENV['PASSWORD']}"
+  end
+
+end
