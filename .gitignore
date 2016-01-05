@@ -1,7 +1,7 @@
 #Vagrant Project material
 .DS_Store
 .env
-.vagrant/
+.vagrant
 *.sw?
 
 
