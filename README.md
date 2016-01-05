@@ -17,13 +17,3 @@ system:
 If you are running OSX you will also need to install
 * Homebrew
 
-
-
-
-Set your RHN credentials in the environment *before* provisioning ...
-
-```
-export RHN_USER=foo
-export RHN_PASS=blah
-```
-
